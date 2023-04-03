@@ -25,7 +25,7 @@ function updateMethod() {
             hidemaru.postExecMacroMemory(command);
         }
         catch (e) {
-            console.log(e);
+            outputpaneWriteLine(e.toString());
         }
     }
     else if (true) {
@@ -41,7 +41,7 @@ function updateMethod() {
                 hidemaru.postExecMacroMemory(command);
             }
             catch (e) {
-                console.log(e);
+                outputpaneWriteLine(e.toString());
             }
         }
     }
@@ -51,7 +51,6 @@ function outputpaneWriteLine(msg) {
     let modify_msg = msg.replaceAll(/\r\n/g, "\n").replaceAll(/\n/g, "\r\n");
     return op_dllobj.dllFunc.Output(hidemaru.getCurrentWindowHandle(), modify_msg);
 }
-outputpaneWriteLine("unko");
 let lastPosY = 0;
 let lastPosYArray = [3, 2, 1]; // 全部違う値で先頭付近でとりあえず埋めておく
 let lastAllLineCount = 0;
