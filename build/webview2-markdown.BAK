@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Markdownプレビュー</title>
+    <style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+            overflow: hidden;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .selected {
+            border: solid 1px #ff000099 !important;
+            background-color: #ff000033 !important;
+        }
+    </style>
+    <!--link rel="stylesheet" href="github-markdown-dark.css"-->
+    <link rel="stylesheet" href="github-markdown-light.css">
+</head>
+
+<body>
+
+    <textarea id="txtMarkdown" style="display: none; position: fixed; top: 0; left: 0%; width: 50%; height: 100%; overflow: scroll; border: solid 1px #000;"></textarea>
+    <div id="boxPreview" class="markdown-body" style="position: fixed; top: 0; left: 0%; width: 100%; height: 100%; padding: 16px; overflow: scroll; border: solid 1px #000;"></div>
+
+    <script>
+        var txtMarkdown = document.querySelector('#txtMarkdown');
+        var boxPreview = document.querySelector('#boxPreview');
+
+        var _scriptFile = 'md2html.js';
+        if (!window.chrome?.webview?.addEventListener) {
+            // not Hidemaru browser frame
+            txtMarkdown.style.display = 'block';
+            boxPreview.style.left = '50%';
+            boxPreview.style.width = '100%';
+        }
+
+        var _scrElm = document.createElement('script');
+        _scrElm.src = _scriptFile;
+        document.body.appendChild(_scrElm);
+
+        // Render Markdown HTML
+        async function mdrender(mdtext, beginLine) {
+            var html = await md2html.md2html(mdtext);
+            boxPreview.innerHTML = html;
+            if (beginLine > 0) {
+                boxScroll(beginLine)
+            }
+        }
+
+        // Edit Markdown
+        txtMarkdown.oninput = () => {
+            mdrender(txtMarkdown.value, 1);
+        }
+
+        // move Cursor in Markdown Editor
+        var isSelected = false;
+        document.onselectionchange = function () {
+            if (document.activeElement != txtMarkdown) {
+                if (isSelected) {
+                    document.querySelectorAll('.selected').forEach(v => v.classList.remove('selected'));
+                    isSelected = false;
+                }
+                return;
+            }
+
+            //console.log([txtMarkdown.selectionStart, txtMarkdown.selectionEnd]);
+            var text = txtMarkdown.value;
+            var offset = 0;
+            var found;
+            var beginLine = 1;
+            while ((found = text.indexOf('\n', offset)) >= 0) {
+                if (found >= txtMarkdown.selectionStart) {
+                    break;
+                }
+                beginLine++;
+                offset = found + 1;
+            }
+            var endLine = beginLine;
+            while ((found = text.indexOf('\n', offset)) >= 0) {
+                if (found >= txtMarkdown.selectionEnd) {
+                    break;
+                }
+                endLine++;
+                offset = found + 1;
+            }
+            //console.log(`Range = [${beginLine} .. ${endLine}]`);
+            boxScroll(beginLine, endLine);
+        }
+
+        // Scroll to Center
+        var lazyTimer = 0;
+        function boxScroll(beginLine, endLine) {
+            endLine = endLine || beginLine;
+            var selected = [];
+            for (var lineno = endLine || beginLine; lineno > 0; lineno--) {
+                var elm = document.querySelector(`#ln${lineno}`);
+                if (elm) {
+                    selected.push(elm);
+                    if (lineno <= beginLine)
+                        break;
+                }
+            }
+            if (selected.length > 0) {
+                isSelected = true;
+                document.querySelectorAll('.selected').forEach(v => v.classList.remove('selected'));
+                selected.forEach(v => v.classList.add('selected'));
+                if (lazyTimer) {
+                    clearTimeout(lazyTimer);
+                    lazyTimer = 0;
+                }
+                var targetElm = selected[Math.floor(selected.length / 2)];
+                lazyTimer = setTimeout(() => {
+                    lazyTimer = 0;
+                    targetElm.scrollIntoView({ behavior: "smooth", block: "center", inline: "start" }); // not fire during mouse operation
+                    console.log(targetElm.id);
+                }, 1);
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>
