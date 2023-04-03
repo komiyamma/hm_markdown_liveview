@@ -1,4 +1,8 @@
 /// <reference path="../types/hm_jsmode_strict.d.ts" />
+/*
+ * Copyright (c) 2023 Akitsugu Komiyama
+ * under the MIT License
+ */
 hidemaruGlobal.showbrowserpane(1, 2);
 // hidemaruGlobal.setbrowserpaneurl(hidemaru.getFileFullPath(), 2);
 hidemaruGlobal.setbrowserpaneurl(hidemaruGlobal.currentmacrodirectory() + "\\webview2-markdown.html", 2);
@@ -68,7 +72,7 @@ function updateMethod() {
             try {
                 // hidemaru.postExecMacroMemory(`jsmode @"WebView2\HmBrowserAutoUpdaterMain"; js {setbrowserpaneurl("javascript:window.scrollTo(0, parseInt(${perY}*(document.documentElement.scrollHeight - document.documentElement.clientHeight)));", 2)}`);
                 var js = "javascript:boxScroll(".concat(posY, ")");
-                var command = "setbrowserpaneurl R\"SETBROWSERPANEURL2(".concat(js, ")AAA\", 2;");
+                var command = "setbrowserpaneurl R\"SETBROWSERPANEURL1(".concat(js, ")SETBROWSERPANEURL1\", 2;");
                 hidemaru.postExecMacroMemory(command);
             }
             catch (e) {

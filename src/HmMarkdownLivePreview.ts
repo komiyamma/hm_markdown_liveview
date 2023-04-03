@@ -1,4 +1,8 @@
 /// <reference path="../types/hm_jsmode_strict.d.ts" />
+/* 
+ * Copyright (c) 2023 Akitsugu Komiyama
+ * under the MIT License
+ */
 
 hidemaruGlobal.showbrowserpane(1, 2);
 // hidemaruGlobal.setbrowserpaneurl(hidemaru.getFileFullPath(), 2);
