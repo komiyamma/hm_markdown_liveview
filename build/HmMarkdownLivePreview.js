@@ -4,7 +4,6 @@
  * under the MIT License
  */
 hidemaruGlobal.showbrowserpane(1, 2);
-// hidemaruGlobal.setbrowserpaneurl(hidemaru.getFileFullPath(), 2);
 hidemaruGlobal.setbrowserpaneurl(hidemaruGlobal.currentmacrodirectory() + "\\webview2-markdown.html", 2);
 var timerHandle = 0; // 時間を跨いで共通利用するので、varで
 hidemaruGlobal.debuginfo(2);
@@ -12,31 +11,17 @@ function updateMethod() {
     if (hidemaru.isMacroExecuting()) {
         return;
     }
-    /*
-    if (isFileNameChanged()) {
-        // console.log("isFileNameChanged\r\n")
-        try {
-            if (hidemaru.getFileFullPath() == "") {
-                hidemaru.postExecMacroMemory(`setbrowserpaneurl "about:blank", 2;`);
-            } else {
-                hidemaru.postExecMacroMemory(`setbrowserpaneurl filename2, 2;`);
-            }
-        } catch (e) {
-            console.log(e);
-        }
-    }
-    else */
     if (isCountUpdated() && isTextUpdated()) {
         try {
             // hidemaru.postExecMacroMemory(`jsmode @"WebView2\HmBrowserAutoUpdaterMain"; js {refreshbrowserpane(2);}`);
-            var text = hidemaru.getTotalText();
+            let text = hidemaru.getTotalText();
             text = text.replaceAll("\\", "\\\\");
             text = text.replaceAll("\r\n", "\\n");
             text = text.replaceAll("\t", "\\t");
             text = text.replaceAll("\'", "\\'");
-            var _a = getChangeYPos(), diff = _a[0], posY = _a[1], allLineCount = _a[2];
-            var js = "javascript:mdrender('".concat(text, "', ").concat(posY, ")");
-            var command = "setbrowserpaneurl R\"SETBROWSERPANEURL1(".concat(js, ")SETBROWSERPANEURL1\", 2;");
+            let [diff, posY, allLineCount] = getChangeYPos();
+            let js = `javascript:mdrender('${text}', ${posY})`;
+            let command = `setbrowserpaneurl R"SETBROWSERPANEURL1(${js})SETBROWSERPANEURL1", 2;`;
             hidemaru.postExecMacroMemory(command);
         }
         catch (e) {
@@ -44,15 +29,15 @@ function updateMethod() {
         }
     }
     else if (true) {
-        var _b = getChangeYPos(), diff = _b[0], posY = _b[1], allLineCount = _b[2];
+        let [diff, posY, allLineCount] = getChangeYPos();
         if (allLineCount < 0) {
             allLineCount = 1;
         }
         if (diff && posY > 0 && allLineCount > 0) {
             try {
                 // hidemaru.postExecMacroMemory(`jsmode @"WebView2\HmBrowserAutoUpdaterMain"; js {setbrowserpaneurl("javascript:window.scrollTo(0, parseInt(${perY}*(document.documentElement.scrollHeight - document.documentElement.clientHeight)));", 2)}`);
-                var js = "javascript:boxScroll(".concat(posY, ")");
-                var command = "setbrowserpaneurl R\"SETBROWSERPANEURL1(".concat(js, ")SETBROWSERPANEURL1\", 2;");
+                let js = `javascript:boxScroll(${posY})`;
+                let command = `setbrowserpaneurl R"SETBROWSERPANEURL1(${js})SETBROWSERPANEURL1", 2;`;
                 hidemaru.postExecMacroMemory(command);
             }
             catch (e) {
@@ -61,14 +46,14 @@ function updateMethod() {
         }
     }
 }
-var lastPosY = 0;
-var lastPosYArray = [3, 2, 1]; // 全部違う値で先頭付近でとりあえず埋めておく
-var lastAllLineCount = 0;
+let lastPosY = 0;
+let lastPosYArray = [3, 2, 1]; // 全部違う値で先頭付近でとりあえず埋めておく
+let lastAllLineCount = 0;
 function getChangeYPos() {
-    var diff = false;
-    var posY = getCurCursorYPos();
+    let diff = false;
+    let posY = getCurCursorYPos();
     // console.log("posY:" + posY);
-    var allLineCount = getAllLineCount();
+    let allLineCount = getAllLineCount();
     if (lastPosY != posY) {
         lastPosY = posY;
         diff = true;
@@ -78,12 +63,12 @@ function getChangeYPos() {
     // console.log(lastPosYArray);
     // ３つとも一緒(カーソルが動いていない) で マウスによる位置とかけ離れている時は、マウスによる位置を採用
     if (lastPosYArray[0] == lastPosYArray[1] && lastPosYArray[0] == lastPosYArray[2]) {
-        var mousePosY = getCurCursorYPosFromMousePos();
+        let mousePosY = getCurCursorYPosFromMousePos();
         if (mousePosY > 1) {
             // console.log("カーソル動いていない");
             // console.log("posY:" + posY + "\r\n");
             // console.log("mousePosY:" + mousePosY + "\r\n");
-            var abs = Math.abs(posY - mousePosY);
+            let abs = Math.abs(posY - mousePosY);
             if (abs >= 15) {
                 // console.log("マウスの位置との差:"+ abs);
                 posY = mousePosY;
@@ -101,44 +86,44 @@ function getChangeYPos() {
     }
     return [diff, posY, allLineCount];
 }
-var lastFileName = "";
+let lastFileName = "";
 function isFileNameChanged() {
-    var diff = false;
-    var curFileName = hidemaru.getFileFullPath();
+    let diff = false;
+    let curFileName = hidemaru.getFileFullPath();
     if (curFileName != lastFileName) {
         diff = true;
     }
     lastFileName = curFileName;
     return diff;
 }
-var lastFileModified = 0;
+let lastFileModified = 0;
 function isFileLastModifyUpdated() {
-    var diff = false;
-    var filepath = hidemaru.getFileFullPath();
+    let diff = false;
+    let filepath = hidemaru.getFileFullPath();
     if (filepath == "") {
         return false;
     }
-    var fso = hidemaru.createObject("Scripting.FileSystemObject");
-    var f = fso.GetFile(filepath);
-    var m = f.DateLastModified;
+    let fso = hidemaru.createObject("Scripting.FileSystemObject");
+    let f = fso.GetFile(filepath);
+    let m = f.DateLastModified;
     if (m != lastFileModified) {
         diff = true;
         lastFileModified = m;
     }
     return diff;
 }
-var updateCount = 0;
+let updateCount = 0;
 function isCountUpdated() {
-    var curCount = hidemaru.getUpdateCount();
+    let curCount = hidemaru.getUpdateCount();
     if (updateCount != curCount) {
         updateCount = curCount;
         return true;
     }
     return false;
 }
-var preText = "";
+let preText = "";
 function isTextUpdated() {
-    var curText = hidemaru.getTotalText();
+    let curText = hidemaru.getTotalText();
     if (curText != undefined && preText != curText) {
         preText = curText;
         return true;
@@ -160,8 +145,8 @@ function createIntervalTick(func) {
     return timerHandle;
 }
 function getAllLineCount() {
-    var text = hidemaru.getTotalText();
-    var cnt = text.match(/\n/g);
+    let text = hidemaru.getTotalText();
+    let cnt = text.match(/\n/g);
     if (cnt) {
         return cnt.length;
     }
@@ -170,11 +155,11 @@ function getAllLineCount() {
     }
 }
 function getCurCursorYPos() {
-    var pos = hidemaru.getCursorPos("wcs");
+    let pos = hidemaru.getCursorPos("wcs");
     return pos[0];
 }
 function getCurCursorYPosFromMousePos() {
-    var pos = hidemaru.getCursorPosFromMousePos("wcs");
+    let pos = hidemaru.getCursorPosFromMousePos("wcs");
     return pos[0];
 }
 updateMethod();
