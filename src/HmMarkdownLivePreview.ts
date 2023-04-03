@@ -30,45 +30,26 @@ function updateMethod() {
         }
     }
     else */
-    if (isCountUpdated()) {
-        //  console.log("isCountUpdated\r\n")
-        if (isTextUpdated()) {
-            // console.log("isFileUpdated\r\n")
-            try {
-                // hidemaru.postExecMacroMemory(`jsmode @"WebView2\HmBrowserAutoUpdaterMain"; js {refreshbrowserpane(2);}`);
-                let text = hidemaru.getTotalText();
-                text = text.replaceAll("\\", "\\\\");
-                text = text.replaceAll("\r\n", "\\n");
-                text = text.replaceAll("\t", "\\t");
-                text = text.replaceAll("\'", "\\'");
-                let [diff, posY, allLineCount] = getChangeYPos();
-                let js = `javascript:mdrender('${text}', ${posY})`;
-                let command = `setbrowserpaneurl R"SETBROWSERPANEURL1(${js})SETBROWSERPANEURL1", 2;`
-                hidemaru.postExecMacroMemory(command);
-            } catch (e) {
-                console.log(e);
-            }
+    if (isCountUpdated() && isTextUpdated()) {
+        try {
+            // hidemaru.postExecMacroMemory(`jsmode @"WebView2\HmBrowserAutoUpdaterMain"; js {refreshbrowserpane(2);}`);
+            let text = hidemaru.getTotalText();
+            text = text.replaceAll("\\", "\\\\");
+            text = text.replaceAll("\r\n", "\\n");
+            text = text.replaceAll("\t", "\\t");
+            text = text.replaceAll("\'", "\\'");
+            let [diff, posY, allLineCount] = getChangeYPos();
+            let js = `javascript:mdrender('${text}', ${posY})`;
+            let command = `setbrowserpaneurl R"SETBROWSERPANEURL1(${js})SETBROWSERPANEURL1", 2;`
+            hidemaru.postExecMacroMemory(command);
+        } catch (e) {
+            console.log(e);
         }
     }
     else if (true) {
         let [diff, posY, allLineCount] = getChangeYPos();
         if (allLineCount < 0) { allLineCount = 1; }
         if (diff && posY > 0 && allLineCount > 0) {
-            /*
-            if (posY < 15) { // 最初の行まであと10行程度なのであれば、最初にいる扱いにする。
-                posY = 0;
-            }
-            if (allLineCount - posY < 15) {
-                posY = allLineCount; // 最後の行まであと15行程度なのであれば、最後の行にいる扱いにする。
-            }
-            */
-            let perY: number = posY / allLineCount;
-            if (perY >= 1) {
-                perY = 1.1; // これ丁度だと最後の行が微妙な感じになりやすい。
-            } else if (perY < 0) {
-                perY = 0
-            }
-            // console.log("perY:"+perY);
             try {
                 // hidemaru.postExecMacroMemory(`jsmode @"WebView2\HmBrowserAutoUpdaterMain"; js {setbrowserpaneurl("javascript:window.scrollTo(0, parseInt(${perY}*(document.documentElement.scrollHeight - document.documentElement.clientHeight)));", 2)}`);
                 let js = `javascript:boxScroll(${posY})`;
