@@ -110,7 +110,7 @@
                         break;
                 }
             }
-            if (selected.length > 0) {
+            if (selected && selected.length > 0) {
                 isSelected = true;
                 document.querySelectorAll('.selected').forEach(v => v.classList.remove('selected'));
                 selected.forEach(v => v.classList.add('selected'));

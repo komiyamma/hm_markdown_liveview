@@ -32,7 +32,7 @@ function updateMethod() {
     else */
     if (isCountUpdated()) {
         //  console.log("isCountUpdated\r\n")
-        if (isFileLastModifyUpdated()) {
+        if (isTextUpdated()) {
             // console.log("isFileUpdated\r\n")
             try {
                 // hidemaru.postExecMacroMemory(`jsmode @"WebView2\HmBrowserAutoUpdaterMain"; js {refreshbrowserpane(2);}`);
@@ -137,14 +137,15 @@ let lastFileModified: number = 0;
 function isFileLastModifyUpdated(): boolean {
     let diff: boolean = false;
     let filepath = hidemaru.getFileFullPath();
-    if (filepath != "") {
-        let fso: any = hidemaru.createObject("Scripting.FileSystemObject");
-        let f = fso.GetFile(filepath);
-        let m = f.DateLastModified;
-        if (m != lastFileModified) {
-            diff = true;
-            lastFileModified = m;
-        }
+    if (filepath == "") {
+        return false;
+    }
+    let fso: any = hidemaru.createObject("Scripting.FileSystemObject");
+    let f = fso.GetFile(filepath);
+    let m = f.DateLastModified;
+    if (m != lastFileModified) {
+        diff = true;
+        lastFileModified = m;
     }
     return diff;
 }
@@ -191,7 +192,11 @@ function createIntervalTick(func): number {
 function getAllLineCount() {
     let text = hidemaru.getTotalText();
     let cnt = text.match(/\n/g);
-    return cnt.length;
+    if (cnt) {
+        return cnt.length
+    } else {
+        return 1;
+    }
 }
 
 function getCurCursorYPos() {
