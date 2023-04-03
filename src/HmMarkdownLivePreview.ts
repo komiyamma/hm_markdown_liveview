@@ -10,7 +10,7 @@ hidemaruGlobal.setbrowserpaneurl(hidemaruGlobal.currentmacrodirectory() + "\\web
 
 var timerHandle: number = 0; // 時間を跨いで共通利用するので、varで
 
-hidemaruGlobal.debuginfo(2);
+// hidemaruGlobal.debuginfo(2);
 function updateMethod() {
     if (hidemaru.isMacroExecuting()) {
         return;
@@ -28,7 +28,7 @@ function updateMethod() {
             let command = `setbrowserpaneurl R"SETBROWSERPANEURL1(${js})SETBROWSERPANEURL1", 2;`
             hidemaru.postExecMacroMemory(command);
         } catch (e) {
-            console.log(e);
+            outputpaneWriteLine(e.toString());
         }
     }
     else if (true) {
@@ -41,11 +41,18 @@ function updateMethod() {
                 let command = `setbrowserpaneurl R"SETBROWSERPANEURL1(${js})SETBROWSERPANEURL1", 2;`
                 hidemaru.postExecMacroMemory(command);
             } catch (e) {
-                console.log(e);
+                outputpaneWriteLine(e.toString());
             }
         }
     }
 }
+
+var op_dllobj = hidemaru.loadDll("HmOutputPane.dll");
+function outputpaneWriteLine(msg: string): number {
+    let modify_msg: string = msg.replaceAll(/\r\n/g, "\n").replaceAll(/\n/g, "\r\n");
+    return op_dllobj.dllFunc.Output(hidemaru.getCurrentWindowHandle(), modify_msg);
+}
+
 
 let lastPosY = 0;
 let lastPosYArray: number[] = [3, 2, 1]; // 全部違う値で先頭付近でとりあえず埋めておく

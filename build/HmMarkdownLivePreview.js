@@ -6,7 +6,7 @@
 hidemaruGlobal.showbrowserpane(1, 2);
 hidemaruGlobal.setbrowserpaneurl(hidemaruGlobal.currentmacrodirectory() + "\\webview2-markdown.html", 2);
 var timerHandle = 0; // 時間を跨いで共通利用するので、varで
-hidemaruGlobal.debuginfo(2);
+// hidemaruGlobal.debuginfo(2);
 function updateMethod() {
     if (hidemaru.isMacroExecuting()) {
         return;
@@ -46,6 +46,12 @@ function updateMethod() {
         }
     }
 }
+var op_dllobj = hidemaru.loadDll("HmOutputPane.dll");
+function outputpaneWriteLine(msg) {
+    let modify_msg = msg.replaceAll(/\r\n/g, "\n").replaceAll(/\n/g, "\r\n");
+    return op_dllobj.dllFunc.Output(hidemaru.getCurrentWindowHandle(), modify_msg);
+}
+outputpaneWriteLine("unko");
 let lastPosY = 0;
 let lastPosYArray = [3, 2, 1]; // 全部違う値で先頭付近でとりあえず埋めておく
 let lastAllLineCount = 0;
