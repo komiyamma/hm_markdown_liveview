@@ -5,7 +5,6 @@
  */
 
 hidemaruGlobal.showbrowserpane(1, 2);
-// hidemaruGlobal.setbrowserpaneurl(hidemaru.getFileFullPath(), 2);
 hidemaruGlobal.setbrowserpaneurl(hidemaruGlobal.currentmacrodirectory() + "\\webview2-markdown.html", 2);
 
 
@@ -16,20 +15,6 @@ function updateMethod() {
     if (hidemaru.isMacroExecuting()) {
         return;
     }
-    /*
-    if (isFileNameChanged()) {
-        // console.log("isFileNameChanged\r\n")
-        try {
-            if (hidemaru.getFileFullPath() == "") {
-                hidemaru.postExecMacroMemory(`setbrowserpaneurl "about:blank", 2;`);
-            } else {
-                hidemaru.postExecMacroMemory(`setbrowserpaneurl filename2, 2;`);
-            }
-        } catch (e) {
-            console.log(e);
-        }
-    }
-    else */
     if (isCountUpdated() && isTextUpdated()) {
         try {
             // hidemaru.postExecMacroMemory(`jsmode @"WebView2\HmBrowserAutoUpdaterMain"; js {refreshbrowserpane(2);}`);
