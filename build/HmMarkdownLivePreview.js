@@ -38,10 +38,10 @@ function updateMethod() {
         if (diff && posY > 0) {
             try {
                 // 文字列を選択中なら 
-                //   ⇒ sprintf("javascript:boxScroll(%d,%d)", seltoplineno selendlineno) 相当を、
+                //   ⇒ sprintf("javascript:boxScroll(%d,%d)", seltoplineno, selendlineno) 相当を、
                 // そうでなければ、
                 //   ⇒ sprintf("javascript:boxScroll(%d)", lineno) 相当を
-                let command = `if (selecting) { setbrowserpaneurl "javascript:boxScroll(" + str(seltoplineno) +","+ str(selendlineno) + ")", 2; } else {setbrowserpaneurl "javascript:boxScroll("+str(lineno)+")", 2;}`;
+                let command = `if (selecting) { setbrowserpaneurl sprintf("javascript:boxScroll(%d,%d)", seltoplineno, selendlineno), 2; } else {setbrowserpaneurl sprintf("javascript:boxScroll(%d)", lineno), 2;}`;
                 // 直前でも判定。少しでもマクロ衝突を避ける確率を上げる
                 if (!hidemaru.isMacroExecuting()) {
                     hidemaru.postExecMacroMemory(command);
