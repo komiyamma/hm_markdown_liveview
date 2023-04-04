@@ -1,6 +1,6 @@
 /// <reference path="../types/hm_jsmode_strict.d.ts" />
 /* 
- * HmMarkDownLivePreview v0.4.5
+ * HmMarkDownLivePreview v0.4.6
  *
  * Copyright (c) 2023 Akitsugu Komiyama
  * under the MIT License
