@@ -74,30 +74,33 @@ function getChangeYPos() {
     }
     lastPosYArray.push(posY);
     lastPosYArray.shift();
-    // console.log(lastPosYArray);
-    // ３つとも一緒(カーソルが動いていない) で マウスによる位置とかけ離れている時は、マウスによる位置を採用
-    if (lastPosYArray[0] == lastPosYArray[1] && lastPosYArray[0] == lastPosYArray[2]) {
-        let mousePosY = getCurCursorYPosFromMousePos();
-        if (mousePosY > 1 && lastMousePosY != mousePosY) {
-            // console.log("カーソル動いていない");
-            // console.log("posY:" + posY + "\r\n");
-            // console.log("mousePosY:" + mousePosY + "\r\n");
-            let abs = Math.abs(posY - mousePosY);
-            if (abs >= 30) { // マウスとカーソルが50行差があるならば、
-                // console.log("マウスの位置との差:"+ abs);
-                posY = mousePosY;
-                lastMousePosY = mousePosY;
-                diff = true;
+    /* マウスではなくスクロールの位置でやったほうがマシ
+    if (is_consider_mouse_operation) {
+
+        // console.log(lastPosYArray);
+        // ３つとも一緒(カーソルが動いていない) で マウスによる位置とかけ離れている時は、マウスによる位置を採用
+        if (lastPosYArray[0] == lastPosYArray[1] && lastPosYArray[0] == lastPosYArray[2]) {
+            let mousePosY = getCurCursorYPosFromMousePos();
+            if (mousePosY > 1 && lastMousePosY != mousePosY && !is_not_valid_mouse_operation) {
+                // console.log("カーソル動いていない");
+                // console.log("posY:" + posY + "\r\n");
+                // console.log("mousePosY:" + mousePosY + "\r\n");
+                let abs = Math.abs(posY - mousePosY);
+                if (abs >= 30) { // マウスとカーソルが50行差があるならば、
+                    // console.log("マウスの位置との差:"+ abs);
+                    posY = mousePosY;
+                    lastMousePosY = mousePosY;
+                    diff = true;
+                } else if (lastPosY != lastMousePosY) {
+                    posY = lastPosY;
+                    diff = true;
+                }
             }
-            else if (lastPosY != lastMousePosY) {
-                posY = lastPosY;
-                diff = true;
-            }
+        } else {
+            diff = true;
         }
     }
-    else {
-        diff = true;
-    }
+    */
     // console.log("allLineCounts:" + allLineCount);
     if (lastAllLineCount != allLineCount) {
         lastAllLineCount = allLineCount;
