@@ -22,7 +22,10 @@ function updateMethod() {
             let [diff, posY, allLineCount] = getChangeYPos();
             let js = `javascript:mdrender('${text}', ${posY})`;
             let command = `setbrowserpaneurl R"SETBROWSERPANEURL1(${js})SETBROWSERPANEURL1", 2;`;
-            hidemaru.postExecMacroMemory(command);
+            // 直前でも判定。少しでもマクロ衝突を避ける確率を上げる
+            if (!hidemaru.isMacroExecuting()) {
+                hidemaru.postExecMacroMemory(command);
+            }
         }
         catch (e) {
             outputpaneWriteLine(e.toString());
@@ -30,15 +33,14 @@ function updateMethod() {
     }
     else if (true) {
         let [diff, posY, allLineCount] = getChangeYPos();
-        if (allLineCount < 0) {
-            allLineCount = 1;
-        }
-        if (diff && posY > 0 && allLineCount > 0) {
+        if (diff && posY > 0) {
             try {
-                // hidemaru.postExecMacroMemory(`jsmode @"WebView2\HmBrowserAutoUpdaterMain"; js {setbrowserpaneurl("javascript:window.scrollTo(0, parseInt(${perY}*(document.documentElement.scrollHeight - document.documentElement.clientHeight)));", 2)}`);
                 let js = `javascript:boxScroll(${posY})`;
                 let command = `setbrowserpaneurl R"SETBROWSERPANEURL1(${js})SETBROWSERPANEURL1", 2;`;
-                hidemaru.postExecMacroMemory(command);
+                // 直前でも判定。少しでもマクロ衝突を避ける確率を上げる
+                if (!hidemaru.isMacroExecuting()) {
+                    hidemaru.postExecMacroMemory(command);
+                }
             }
             catch (e) {
                 outputpaneWriteLine(e.toString());
@@ -84,7 +86,7 @@ function getChangeYPos() {
     else {
         diff = true;
     }
-    // console.log("poallLineCounts:" + allLineCount);
+    // console.log("allLineCounts:" + allLineCount);
     if (lastAllLineCount != allLineCount) {
         lastAllLineCount = allLineCount;
         diff = true;
