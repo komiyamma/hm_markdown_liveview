@@ -1,6 +1,6 @@
 /// <reference path="../types/hm_jsmode_strict.d.ts" />
 /* 
- * HmMarkDownLivePreview v0.4.2
+ * HmMarkDownLivePreview v0.4.3
  *
  * Copyright (c) 2023 Akitsugu Komiyama
  * under the MIT License
@@ -46,7 +46,7 @@ function updateMethod() {
                 //   ⇒ sprintf("javascript:boxScroll(%d,%d)", seltoplineno, selendlineno) 相当を、
                 // そうでなければ、
                 //   ⇒ sprintf("javascript:boxScroll(%d)", lineno) 相当を
-                let command = `if (selecting) { setbrowserpaneurl sprintf("javascript:boxScroll(%d,%d)", seltoplineno, selendlineno), 2; } else {setbrowserpaneurl sprintf("javascript:boxScroll(%d)", lineno), 2;}`;
+                let command = `if (selecting) { setbrowserpaneurl sprintf("javascript:boxScroll(%d,%d)", seltoplineno, selendlineno), 2; } else {setbrowserpaneurl sprintf("javascript:boxScroll(%d)", ${posY}), 2;}`;
 
                 // 直前でも判定。少しでもマクロ衝突を避ける確率を上げる
                 if ( ! hidemaru.isMacroExecuting()) {
