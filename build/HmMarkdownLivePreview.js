@@ -1,6 +1,6 @@
 /// <reference path="../types/hm_jsmode_strict.d.ts" />
 /*
- * HmMarkDownLivePreview v0.4.4
+ * HmMarkDownLivePreview v0.4.5
  *
  * Copyright (c) 2023 Akitsugu Komiyama
  * under the MIT License
@@ -61,6 +61,8 @@ function outputpaneWriteLine(msg) {
 let lastPosY = 0;
 let lastPosYArray = [3, 2, 1]; // 全部違う値で先頭付近でとりあえず埋めておく
 let lastAllLineCount = 0;
+let lastMousePosY = 0;
+let lastIsCursor = true;
 function getChangeYPos() {
     let diff = false;
     let posY = getCurCursorYPos();
@@ -76,14 +78,19 @@ function getChangeYPos() {
     // ３つとも一緒(カーソルが動いていない) で マウスによる位置とかけ離れている時は、マウスによる位置を採用
     if (lastPosYArray[0] == lastPosYArray[1] && lastPosYArray[0] == lastPosYArray[2]) {
         let mousePosY = getCurCursorYPosFromMousePos();
-        if (mousePosY > 1) {
+        if (mousePosY > 1 && lastMousePosY != mousePosY) {
             // console.log("カーソル動いていない");
             // console.log("posY:" + posY + "\r\n");
             // console.log("mousePosY:" + mousePosY + "\r\n");
             let abs = Math.abs(posY - mousePosY);
-            if (abs >= 50) { // マウスとカーソルが50行差があるならば、
+            if (abs >= 30) { // マウスとカーソルが50行差があるならば、
                 // console.log("マウスの位置との差:"+ abs);
                 posY = mousePosY;
+                lastMousePosY = mousePosY;
+                diff = true;
+            }
+            else if (lastPosY != lastMousePosY) {
+                posY = lastPosY;
                 diff = true;
             }
         }
@@ -144,6 +151,9 @@ function isTextUpdated() {
 }
 function initVariable() {
     lastPosYArray = [3, 2, 1];
+    lastMousePosY = 0;
+    lastPosY = 0;
+    lastIsCursor = true;
 }
 function stopIntervalTick() {
     if (timerHandle != 0) {
