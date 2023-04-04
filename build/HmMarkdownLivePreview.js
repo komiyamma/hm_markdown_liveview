@@ -81,7 +81,7 @@ function getChangeYPos() {
             // console.log("posY:" + posY + "\r\n");
             // console.log("mousePosY:" + mousePosY + "\r\n");
             let abs = Math.abs(posY - mousePosY);
-            if (abs >= 15) {
+            if (abs >= 50) { // マウスとカーソルが50行差があるならば、
                 // console.log("マウスの位置との差:"+ abs);
                 posY = mousePosY;
                 diff = true;
